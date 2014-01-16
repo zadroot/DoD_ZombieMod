@@ -514,21 +514,13 @@ public Action:OnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damage
 		if (g_ClientInfo[client][ClientInfo_DamageScale] != 1.0)
 		{
 			static damageAccumulatorOffset;
-<<<<<<< HEAD
 
-=======
-			
->>>>>>> 8f5803b7293c0f0f2c48eeb8e8633122da5926b7
 			if (!damageAccumulatorOffset && (damageAccumulatorOffset = FindDataMapOffs(client, "m_flDamageAccumulator")) == -1)
 			{
 				LogError("Error: Failed to obtain offset: \"m_flDamageAccumulator\"!");
 				return Plugin_Continue;
 			}
-<<<<<<< HEAD
 
-=======
-			
->>>>>>> 8f5803b7293c0f0f2c48eeb8e8633122da5926b7
 			damage *= g_ClientInfo[client][ClientInfo_DamageScale];
 
 			new Float:newHealth = g_ClientInfo[client][ClientInfo_Health] - damage;
@@ -537,21 +529,13 @@ public Action:OnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damage
 			if (newHealth <= 0.0)
 			{
 				// Set the damage required to kill the player.
-<<<<<<< HEAD
 				damage = float(GetEntData(client, g_iOffset_Health) + damageAccumulatorOffset);
-=======
-				damage = GetEntData(client, g_iOffset_Health) + GetEntDataFloat(client, damageAccumulatorOffset);
->>>>>>> 8f5803b7293c0f0f2c48eeb8e8633122da5926b7
 
 				return Plugin_Changed;
 			}
 
 			// Will the health go down to zero?
-<<<<<<< HEAD
 			if (GetEntData(client, g_iOffset_Health) + damageAccumulatorOffset - damage <= 0)
-=======
-			if (GetEntData(client, g_iOffset_Health) + GetEntDataFloat(client, damageAccumulatorOffset) - damage <= 0)
->>>>>>> 8f5803b7293c0f0f2c48eeb8e8633122da5926b7
 			{
 				g_ClientInfo[client][ClientInfo_Health] = newHealth;
 
