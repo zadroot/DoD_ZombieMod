@@ -1,0 +1,15 @@
+"UnlitGeneric"
+
+{
+
+	"$basetexture" "overlays/EM_ZombieMod/zombie_win"
+
+
+
+        "$no_fullbright" 1
+
+	"$translucent" 1
+
+
+
+}
