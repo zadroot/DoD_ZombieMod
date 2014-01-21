@@ -91,7 +91,7 @@ UpdateConVarValue(conVar)
 
 public OnConVarChange(Handle:conVar, const String:oldValue[], const String:newValue[])
 {
-	for (new i = 0; i < ConVar_Size; i++)
+	for (new i; i < ConVar_Size; i++)
 	{
 		if (conVar == g_ConVars[i][ConVarHandle])
 		{

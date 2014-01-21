@@ -56,7 +56,7 @@ bool:IsInZombieSpawn(client)
 	decl Float:vecOrigin[3];
 	GetClientAbsOrigin(client, vecOrigin);
 
-	for (new i = 0; i < g_iNumZombieSpawns; i++)
+	for (new i; i < g_iNumZombieSpawns; i++)
 	{
 		if (GetVectorDistance(vecOrigin, g_vecZombieSpawnOrigin[i], false) <= 400.0)
 		{
@@ -79,7 +79,7 @@ RemoveScreenOverlay(client)
 
 RemoveWeapons(client)
 {
-	for (new i = 0; i < Slot_Size; i++)
+	for (new i; i < Slot_Size; i++)
 	{
 		new weapon = GetPlayerWeaponSlot(client, i);
 
@@ -177,7 +177,7 @@ SelectZombie()
 
 	new arraySize = GetArraySize(clientArray);
 
-	if (arraySize >= 1)
+	if (arraySize)
 	{
 		g_iZombie = GetArrayCell(clientArray, GetRandomInt(0, arraySize - 1));
 	}

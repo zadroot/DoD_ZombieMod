@@ -89,7 +89,7 @@ ShowTimeleft()
 
 public Action:CommandListener_JoinTeam(client, const String:command[], numArgs)
 {
-	if (client != 0 && numArgs >= 1)
+	if (client && 0 < numArgs < 2)
 	{
 		decl String:arg[8];
 		GetCmdArg(1, arg, sizeof(arg));

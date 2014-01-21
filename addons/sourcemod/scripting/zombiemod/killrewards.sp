@@ -137,7 +137,7 @@ bool:HumanReward_PrimaryAmmo(client)
 		decl String:className[MAX_WEAPON_LENGTH];
 		GetEdictClassname(weapon, className, sizeof(className));
 
-		for (new i = 0; i < sizeof(g_szPrimaryWeapons); i++)
+		for (new i; i < sizeof(g_szPrimaryWeapons); i++)
 		{
 			if (StrEqual(className[7], g_szPrimaryWeapons[i])) // Skip the first 7 characters in className to avoid comparing the "weapon_" prefix.
 			{

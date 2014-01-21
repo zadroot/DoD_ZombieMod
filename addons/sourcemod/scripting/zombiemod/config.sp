@@ -130,7 +130,7 @@ LoadConfig()
 
 		if (KvJumpToKey(kv, "Sounds"))
 		{
-			for (new i = 0; i < Sound_Size; i++)
+			for (new i; i < Sound_Size; i++)
 			{
 				KvGetString(kv, g_szSoundKeyNames[i], g_szSounds[i], PLATFORM_MAX_PATH);
 
@@ -152,13 +152,13 @@ LoadConfig()
 
 		if (KvJumpToKey(kv, "Overlays"))
 		{
-			for (new i = 0; i < Overlay_Size; i++)
+			for (new i; i < Overlay_Size; i++)
 			{
 				KvGetString(kv, g_szOverlayKeyNames[i], g_szOverlay[i], PLATFORM_MAX_PATH);
 
 				if (g_szOverlay[i][0] != '\0')
 				{
-					for (new x = 0; x < sizeof(g_szMaterialExtensions); x++)
+					for (new x; x < sizeof(g_szMaterialExtensions); x++)
 					{
 						Format(buffer, sizeof(buffer), "materials/%s.%s", g_szOverlay[i], g_szMaterialExtensions[x]);
 
@@ -175,7 +175,7 @@ LoadConfig()
 
 		if (KvJumpToKey(kv, "Models"))
 		{
-			for (new i = 0; i < Model_Size; i++)
+			for (new i; i < Model_Size; i++)
 			{
 				KvGetString(kv, g_szModelKeyNames[i], g_szModel[i], PLATFORM_MAX_PATH);
 
@@ -201,7 +201,7 @@ LoadConfig()
 
 		FileToKeyValues(kv, path);
 
-		decl String:mapName[64];
+		decl String:mapName[PLATFORM_MAX_PATH];
 		GetCurrentMap(mapName, sizeof(mapName));
 
 		if (KvJumpToKey(kv, mapName, false))
@@ -213,7 +213,7 @@ LoadConfig()
 		}
 		else
 		{
-			for (new i = 0; i < WhiteList_Size; i++)
+			for (new i; i < WhiteList_Size; i++)
 			{
 				g_bWhiteListed[i] = false;
 			}
@@ -231,12 +231,10 @@ LoadConfig()
 
 LoadConfig_ModelFiles()
 {
-	decl String:path[PLATFORM_MAX_PATH];
+	decl String:path[PLATFORM_MAX_PATH], Handle:file;
 	BuildPath(Path_SM, path, sizeof(path), "configs/zombiemod_modelfiles.cfg");
 
-	new Handle:file = OpenFile(path, "rb");
-
-	if (file != INVALID_HANDLE)
+	if ((file = OpenFile(path, "r")) != INVALID_HANDLE)
 	{
 		decl String:line[PLATFORM_MAX_PATH];
 

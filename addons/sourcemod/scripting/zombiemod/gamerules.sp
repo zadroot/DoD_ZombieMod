@@ -59,7 +59,7 @@ public Event_RoundStart(Handle:event, String:name[], bool:dontBroadcast)
 			SetNumControlPoints(0);
 
 			// Remove all objective related entities
-			for (new i = 0; i < sizeof(objectiveKillEnts); i++)
+			for (new i; i < sizeof(objectiveKillEnts); i++)
 			{
 				while ((entity = FindEntityByClassname(entity, objectiveKillEnts[i])) != -1)
 				{
@@ -134,7 +134,7 @@ public Event_RoundStart(Handle:event, String:name[], bool:dontBroadcast)
 		{
 			entity = -1;
 
-			for (new i = 0; i < sizeof(teamBlockerKillEnts); i++)
+			for (new i; i < sizeof(teamBlockerKillEnts); i++)
 			{
 				while ((entity = FindEntityByClassname(entity, teamBlockerKillEnts[i])) != -1)
 				{
@@ -215,7 +215,7 @@ RoundEnd(winningTeam)
 	{
 		if (IsClientInGame(i) && !IsClientSourceTV(i))
 		{
-			if (g_iLastHuman != 0)
+			if (g_iLastHuman)
 			{
 				StopSound(i, SNDCHAN_AUTO, g_szSounds[Sound_LastManStanding]);
 			}
@@ -251,12 +251,12 @@ RoundEnd(winningTeam)
 		{
 			if (IsClientInGame(i) && !IsClientSourceTV(i))
 			{
-				if (g_ClientInfo[i][ClientInfo_KillsAsHuman] >= 1)
+				if (g_ClientInfo[i][ClientInfo_KillsAsHuman])
 				{
 					PushArrayCell(topHumanKills, i);
 				}
 
-				if (g_ClientInfo[i][ClientInfo_KillsAsZombie] >= 1)
+				if (g_ClientInfo[i][ClientInfo_KillsAsZombie])
 				{
 					PushArrayCell(topZombieKills, i);
 				}
@@ -270,7 +270,7 @@ RoundEnd(winningTeam)
 
 		new topHumanArraySize = GetArraySize(topHumanKills);
 
-		if (topHumanArraySize >= 1)
+		if (topHumanArraySize)
 		{
 			SortADTArrayCustom(topHumanKills, SortByKillsAsHuman);
 
@@ -279,12 +279,12 @@ RoundEnd(winningTeam)
 				topHumanArraySize = SCOREBOARD_MAX_ELEMENTS;
 			}
 
-			for (new i = 0; i < topHumanArraySize; i++)
+			for (new i; i < topHumanArraySize; i++)
 			{
 				new client = GetArrayCell(topHumanKills, i);
 
 				GetClientName(client, buffer, sizeof(buffer));
-				Format(buffer, sizeof(buffer), "%i. %s	(%i Kills)", i + 1, buffer, g_ClientInfo[client][ClientInfo_KillsAsHuman]);
+				Format(buffer, sizeof(buffer), "%i. %s	(%i Kills)", i++, buffer, g_ClientInfo[client][ClientInfo_KillsAsHuman]);
 
 				DrawPanelText(topScorePanel, buffer);
 			}
@@ -298,7 +298,7 @@ RoundEnd(winningTeam)
 
 		new topZombieArraySize = GetArraySize(topZombieKills);
 
-		if (topZombieArraySize >= 1)
+		if (topZombieArraySize)
 		{
 			SortADTArrayCustom(topZombieKills, SortByKillsAsZombie);
 
@@ -307,7 +307,7 @@ RoundEnd(winningTeam)
 				topZombieArraySize = SCOREBOARD_MAX_ELEMENTS;
 			}
 
-			for (new i = 0; i < topZombieArraySize; i++)
+			for (new i; i < topZombieArraySize; i++)
 			{
 				new client = GetArrayCell(topZombieKills, i);
 
@@ -375,20 +375,19 @@ public Action:Timer_RoundTimerThink(Handle:timer)
 	}
 
 	new timeRemaining = RoundFloat(GetTimeRemaining(g_iRoundTimer)) - 1;
-	new timePassed = g_ConVars[ConVar_Zombie_RoundTime][Value_Int] - timeRemaining;
 
-	if (!g_bBlockChangeClass && timePassed == 60)
+	if (!g_bBlockChangeClass && (g_ConVars[ConVar_Zombie_RoundTime][Value_Int] - timeRemaining == 60))
 	{
 		g_bBlockChangeClass = true;
 	}
 
-	if (g_iLastHuman != 0)
+	if (g_iLastHuman)
 	{
 		new lastHuman = GetClientOfUserId(g_iLastHuman);
 
 		new interval = g_ConVars[ConVar_Beacon_Interval][Value_Int];
 
-		if (lastHuman != 0 && g_iBeaconTicks++ % (interval * 2) >= interval)
+		if (lastHuman && g_iBeaconTicks++ % (interval * 2) >= interval)
 		{
 			decl Float:vecPosition[3];
 			GetClientAbsOrigin(lastHuman, vecPosition);

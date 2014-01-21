@@ -72,7 +72,7 @@ public OnClientDisconnect_Post(client)
 		{
 			new critAttacker = GetClientOfUserId(g_ClientInfo[client][ClientInfo_Critter]);
 
-			if (critAttacker != 0)
+			if (critAttacker)
 			{
 				AddPlayerKills(critAttacker, 1);
 				GiveHumanReward(critAttacker);
@@ -131,80 +131,81 @@ public Event_PlayerSpawn(Handle:event, String:name[], bool:dontBroadcast)
 		}
 		else
 		{
-			new clientTeam = GetClientTeam(client);
-
-			if (clientTeam == Team_Allies)
+			switch (GetClientTeam(client))
 			{
-				g_ClientInfo[client][ClientInfo_DamageScale] = 1.0;
-				g_ClientInfo[client][ClientInfo_HasEquipped] = false;
-
-				if (!g_bRoundEnded)
+				case Team_Allies:
 				{
-					if (!g_ClientInfo[client][ClientInfo_ShouldAutoEquip])
-					{
-						CreateTimer(1.0, Timer_ShowEquipMenu, clientUserId, TIMER_FLAG_NO_MAPCHANGE);
-					}
-					else
-					{
-						Menu_PerformEquip(client);
-					}
+					g_ClientInfo[client][ClientInfo_DamageScale] = 1.0;
+					g_ClientInfo[client][ClientInfo_HasEquipped] = false;
 
-					new playerClass = GetPlayerClass(client);
-
-					if (playerClass == PlayerClass_Rifleman
-					|| playerClass  == PlayerClass_Support)
+					if (!g_bRoundEnded)
 					{
-						GivePlayerItem(client, "weapon_colt");
-					}
-					else if (playerClass == PlayerClass_Assault)
-					{
-						// Remove smoke grenade
-						new weapon = GetPlayerWeaponSlot(client, Slot_Melee);
-
-						if (weapon != INVALID_WEAPON)
+						if (!g_ClientInfo[client][ClientInfo_ShouldAutoEquip])
 						{
-							RemovePlayerItem(client, weapon);
-							AcceptEntityInput(weapon, "Kill");
+							CreateTimer(1.0, Timer_ShowEquipMenu, clientUserId, TIMER_FLAG_NO_MAPCHANGE);
+						}
+						else
+						{
+							Menu_PerformEquip(client);
 						}
 
-						GivePlayerItem(client, "weapon_amerknife");
-					}
-					else if (playerClass == PlayerClass_Rocket)
-					{
-						// Remove secondary weapon
-						new weapon = GetPlayerWeaponSlot(client, Slot_Secondary);
+						new playerClass = GetPlayerClass(client);
 
-						if (weapon != INVALID_WEAPON)
+						if (playerClass == PlayerClass_Rifleman
+						|| playerClass  == PlayerClass_Support)
 						{
-							RemovePlayerItem(client, weapon);
-							AcceptEntityInput(weapon, "Kill");
+							GivePlayerItem(client, "weapon_colt");
+						}
+						else if (playerClass == PlayerClass_Assault)
+						{
+							// Remove smoke grenade
+							new weapon = GetPlayerWeaponSlot(client, Slot_Melee);
+
+							if (weapon != INVALID_WEAPON)
+							{
+								RemovePlayerItem(client, weapon);
+								AcceptEntityInput(weapon, "Kill");
+							}
+
+							GivePlayerItem(client, "weapon_amerknife");
+						}
+						else if (playerClass == PlayerClass_Rocket)
+						{
+							// Remove secondary weapon
+							new weapon = GetPlayerWeaponSlot(client, Slot_Secondary);
+
+							if (weapon != INVALID_WEAPON)
+							{
+								RemovePlayerItem(client, weapon);
+								AcceptEntityInput(weapon, "Kill");
+							}
+
+							GivePlayerItem(client, "weapon_colt");
 						}
 
-						GivePlayerItem(client, "weapon_colt");
+						SetWeaponAmmo(client, Ammo_Colt, ExtraAmmoColt);
 					}
-
-					SetWeaponAmmo(client, Ammo_Colt, ExtraAmmoColt);
 				}
-			}
-			else if (clientTeam == Team_Axis)
-			{
-				g_ClientInfo[client][ClientInfo_DamageScale] = FloatDiv(MAX_HEALTH, g_ConVars[ConVar_Zombie_Health][Value_Float]);
-				g_ClientInfo[client][ClientInfo_IsCritial] = false;
-
-				RemoveWeapons(client);
-				GivePlayerItem(client, "weapon_spade");
-
-				PlaySoundFromPlayer(client, g_szSounds[Sound_ZombieSpawn]);
-
-				for (new i = 0; i < Model_Size; i++)
+				case Team_Axis:
 				{
-					if (g_szModel[i][0] != '\0')
-					{
-						SetEntityModel(client, g_szModel[GetRandomInt(0, i)]);
-					}
-				}
+					g_ClientInfo[client][ClientInfo_DamageScale] = FloatDiv(MAX_HEALTH, g_ConVars[ConVar_Zombie_Health][Value_Float]);
+					g_ClientInfo[client][ClientInfo_IsCritial] = false;
 
-				SetPlayerLaggedMovementValue(client, g_ConVars[ConVar_Zombie_Speed][Value_Float]);
+					RemoveWeapons(client);
+					GivePlayerItem(client, "weapon_spade");
+
+					PlaySoundFromPlayer(client, g_szSounds[Sound_ZombieSpawn]);
+
+					for (new i; i < Model_Size; i++)
+					{
+						if (g_szModel[i][0] != '\0')
+						{
+							SetEntityModel(client, g_szModel[GetRandomInt(0, i)]);
+						}
+					}
+
+					SetPlayerLaggedMovementValue(client, g_ConVars[ConVar_Zombie_Speed][Value_Float]);
+				}
 			}
 		}
 	}
@@ -212,7 +213,7 @@ public Event_PlayerSpawn(Handle:event, String:name[], bool:dontBroadcast)
 
 public Action:Timer_ShowEquipMenu(Handle:timer, any:client)
 {
-	if ((client = GetClientOfUserId(client)) != 0 && GetClientTeam(client) == Team_Allies)
+	if ((client = GetClientOfUserId(client)) && GetClientTeam(client) == Team_Allies)
 	{
 		DisplayMenu(g_EquipMenu[Menu_Main], client, 30);
 	}
@@ -247,7 +248,7 @@ public Action:Event_PlayerDeath(Handle:event, String:name[], bool:dontBroadcast)
 
 			new critAttacker = GetClientOfUserId(g_ClientInfo[client][ClientInfo_Critter]);
 
-			if (critAttacker != 0)
+			if (critAttacker)
 			{
 				if (critAttacker != attacker)
 				{
@@ -256,7 +257,7 @@ public Action:Event_PlayerDeath(Handle:event, String:name[], bool:dontBroadcast)
 					SetEventInt(event, "attacker", g_ClientInfo[client][ClientInfo_Critter]);
 					SetEventString(event, "weapon", "crit");
 
-					if (attacker != 0)
+					if (attacker)
 					{
 						AddPlayerKills(attacker, -1);
 					}
@@ -268,7 +269,7 @@ public Action:Event_PlayerDeath(Handle:event, String:name[], bool:dontBroadcast)
 
 				g_ClientInfo[attacker][ClientInfo_KillsAsHuman]++;
 			}
-			else if (attacker != 0 && attacker != client)
+			else if (attacker && attacker != client)
 			{
 				GiveHumanReward(attacker);
 
@@ -283,12 +284,12 @@ public Action:Timer_SwitchToZombieTeam(Handle:timer, any:data)
 	new client = data & 0x0000FFFF;
 	new attacker = data >> 16;
 
-	if ((client = GetClientOfUserId(client)) != 0)
+	if ((client = GetClientOfUserId(client)))
 	{
 		ChangeClientTeam(client, Team_Axis);
 	}
 
-	if (!CheckWinConditions() && (attacker = GetClientOfUserId(attacker)) != 0 && attacker != client)
+	if (!CheckWinConditions() && (attacker = GetClientOfUserId(attacker)) && attacker != client)
 	{
 		g_ClientInfo[attacker][ClientInfo_Critter] = 0;
 		g_ClientInfo[attacker][ClientInfo_KillsAsZombie]++;
@@ -335,7 +336,7 @@ public Event_PlayerDamage(Handle:event, String:name[], bool:dontBrodcast)
 		new attackerUserId = GetEventInt(event, "attacker");
 		new attacker = GetClientOfUserId(attackerUserId);
 
-		if (GetClientTeam(client) == Team_Axis && attacker != 0
+		if (GetClientTeam(client) == Team_Axis && attacker
 		&& !g_ClientInfo[client][ClientInfo_IsCritial]
 		&& GetEventInt(event, "hitgroup") == 1)
 		{
@@ -485,7 +486,7 @@ public Action:OnWeaponCanUse(client, weapon)
 			decl String:className[MAX_WEAPON_LENGTH];
 			GetEdictClassname(weapon, className, sizeof(className));
 
-			for (new i = 0; i < sizeof(allowedZombieWeapons); i++)
+			for (new i; i < sizeof(allowedZombieWeapons); i++)
 			{
 				if (StrEqual(className[7], allowedZombieWeapons[i])) // Skip the first 7 characters in className to avoid comparing the "weapon_" prefix.
 				{
@@ -502,9 +503,9 @@ public Action:OnWeaponCanUse(client, weapon)
 
 public Action:OnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damageType)
 {
-	if (g_bModActive && inflictor != 0)
+	if (g_bModActive && inflictor)
 	{
-		if (GetClientTeam(client) == Team_Axis && attacker > 0 && attacker <= MaxClients && IsInZombieSpawn(client))
+		if (GetClientTeam(client) == Team_Axis && 1 <= attacker <= MaxClients && IsInZombieSpawn(client))
 		{
 			PrintHintText(attacker, "You cannot hurt zombies while they are in spawn!");
 

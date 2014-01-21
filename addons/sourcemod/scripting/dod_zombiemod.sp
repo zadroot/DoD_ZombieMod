@@ -29,9 +29,6 @@
  * or <http://www.sourcemod.net/license.php>.
  */
 
-#pragma semicolon 1
-
-#include <sourcemod>
 #include <sdktools>
 #include <sdkhooks>
 #include <dodhooks>
@@ -39,11 +36,6 @@
 #undef REQUIRE_EXTENSIONS
 #tryinclude <steamtools>
 #tryinclude <sendproxy>
-
-#define PLUGIN_NAME    "DoD:S Zombie Mod"
-#define PLUGIN_VERSION "0.5 BETA"
-
-#define EXTStatus_Okay 1
 
 /**
  * Don't change the order of these!
@@ -64,15 +56,14 @@ public Plugin:myinfo =
 {
 	name        = PLUGIN_NAME,
 	author      = "Andersso & Root, Colster",
-	description = "Zombie Mod for DoD:S",
+	description = "Zombie Mod for Day of Defeat: Source",
 	version     = PLUGIN_VERSION,
 	url         = "http://www.dodsplugins.com/"
 };
 
+
 public OnPluginStart()
 {
-	AutoExecConfig(true, "zombiemod_config", "zombiemod");
-
 #if defined _steamtools_included
 	if (LibraryExists("SteamTools"))
 	{
@@ -93,13 +84,14 @@ public OnPluginStart()
 	InitPlayers();
 	InitCommands();
 	InitGameRules();
+
+	AutoExecConfig(true, "zombiemod_config", "zombiemod");
 }
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
 	MarkNativeAsOptional("Steam_SetGameDescription");
 	MarkNativeAsOptional("SendProxy_Hook");
-	return APLRes_Success;
 }
 
 public OnConfigsExecuted()
@@ -117,12 +109,12 @@ public OnConfigsExecuted()
 
 	LoadConfig();
 
+	new entity = -1;
+
 	if (!g_bWhiteListed[WhiteList_Environment])
 	{
 		SetLightStyle(0, "c");
 		DispatchKeyValue(0, "skyname", "sky_borealis01");
-
-		new entity = -1;
 
 		if ((entity = FindEntityByClassname(entity, "env_sun")) != -1)
 		{
@@ -134,8 +126,6 @@ public OnConfigsExecuted()
 
 	g_iBeamSprite = PrecacheModel("materials/sprites/laser.vmt");
 	g_iHaloSprite = PrecacheModel("materials/sprites/halo01.vmt");
-
-	new entity = -1;
 
 	while ((entity = FindEntityByClassname(entity, "info_player_axis")) != -1)
 	{
