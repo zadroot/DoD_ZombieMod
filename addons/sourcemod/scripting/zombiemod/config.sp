@@ -138,7 +138,7 @@ LoadConfig()
 				{
 					Format(buffer, sizeof(buffer), "sound/%s", g_szSounds[i]);
 
-					if (FileExists(buffer, true))
+					if (FileExists(buffer))
 					{
 						PrecacheSound(g_szSounds[i]);
 
@@ -162,7 +162,7 @@ LoadConfig()
 					{
 						Format(buffer, sizeof(buffer), "materials/%s.%s", g_szOverlay[i], g_szMaterialExtensions[x]);
 
-						if (FileExists(buffer, true))
+						if (FileExists(buffer))
 						{
 							AddFileToDownloadsTable(buffer);
 						}
@@ -249,7 +249,7 @@ LoadConfig_ModelFiles()
 
 			if (line[0] != '\0')
 			{
-				if (FileExists(line, true))
+				if (FileExists(line))
 				{
 					AddFileToDownloadsTable(line);
 				}
