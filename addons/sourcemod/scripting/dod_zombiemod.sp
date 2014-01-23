@@ -64,6 +64,15 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
+	InitOffsets();
+	InitConVars();
+	InitEquipMenu();
+	InitPlayers();
+	InitCommands();
+	InitGameRules();
+
+	AutoExecConfig(true, "zombiemod_config", "zombiemod");
+
 #if defined _steamtools_included
 	if (LibraryExists("SteamTools"))
 	{
@@ -77,15 +86,6 @@ public OnPluginStart()
 		g_bUseSendProxy = true;
 	}
 #endif
-
-	InitOffsets();
-	InitConVars();
-	InitEquipMenu();
-	InitPlayers();
-	InitCommands();
-	InitGameRules();
-
-	AutoExecConfig(true, "zombiemod_config", "zombiemod");
 }
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
