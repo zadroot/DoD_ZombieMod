@@ -59,7 +59,7 @@ public Plugin:myinfo =
 	description = "Zombie Mod for Day of Defeat: Source",
 	version     = PLUGIN_VERSION,
 	url         = "http://www.dodsplugins.com/"
-};
+}
 
 
 public OnPluginStart()
