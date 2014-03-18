@@ -31,6 +31,7 @@
 
 #define PLUGIN_NAME "DoD:S Zombie Mod"
 #define PLUGIN_VERSION "0.6 BETA"
+#define EXTStatus_Okay 1
 #define SCOREBOARD_MAX_ELEMENTS 5
 #define MAX_WEAPON_LENGTH 24
 #define DOD_MAXPLAYERS 33

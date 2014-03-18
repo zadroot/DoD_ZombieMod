@@ -55,11 +55,11 @@
 public Plugin:myinfo =
 {
 	name        = PLUGIN_NAME,
-	author      = "Andersso, Root, Colster",
+	author      = "Andersso & Root, Colster",
 	description = "Zombie Mod for Day of Defeat: Source",
 	version     = PLUGIN_VERSION,
 	url         = "http://www.dodsplugins.com/"
-};
+}
 
 
 public OnPluginStart()
@@ -74,11 +74,17 @@ public OnPluginStart()
 	AutoExecConfig(true, "zombiemod_config", "zombiemod");
 
 #if defined _steamtools_included
-	g_bUseSteamTools = LibraryExists("SteamTools");
+	if (LibraryExists("SteamTools"))
+	{
+		g_bUseSteamTools = true;
+	}
 #endif
 
 #if defined _SENDPROXYMANAGER_INC_
-	g_bUseSendProxy =  LibraryExists("sendproxy");
+	if (GetExtensionFileStatus("sendproxy.ext") == EXTStatus_Okay)
+	{
+		g_bUseSendProxy = true;
+	}
 #endif
 }
 
@@ -96,12 +102,10 @@ public OnConfigsExecuted()
 		Steam_SetGameDescription(PLUGIN_NAME);
 	}
 #endif
-	
+
 	g_iRoundWins = g_iNumZombieSpawns = g_bModActive = g_bRoundEnded = false;
 
 	g_hRoundTimer = INVALID_HANDLE;
-	
-	g_iZombie = -1;
 
 	LoadConfig();
 
@@ -117,7 +121,7 @@ public OnConfigsExecuted()
 			AcceptEntityInput(entity, "TurnOff");
 		}
 	}
-	
+
 	PrecacheSound(SOUND_BLIP);
 
 	g_iBeamSprite = PrecacheModel("materials/sprites/laser.vmt");
