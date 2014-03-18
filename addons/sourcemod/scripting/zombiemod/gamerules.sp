@@ -107,7 +107,7 @@ public Event_RoundStart(Handle:event, String:name[], bool:dontBroadcast)
 			CreateTimer(0.1, Timer_CreateRoundTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 		}
 
-		// Remove HDR tonemapping controllers
+		// Remove HDR tone-mapping controllers
 		if (!g_bWhiteListed[WhiteList_Environment])
 		{
 			entity = -1;
@@ -244,8 +244,7 @@ RoundEnd(winningTeam)
 	{
 		decl String:buffer[64];
 
-		new Handle:topHumanKills = CreateArray();
-		new Handle:topZombieKills = CreateArray();
+		new Handle:topHumanKills = CreateArray(), Handle:topZombieKills = CreateArray();
 
 		for (new i = 1; i <= MaxClients; i++)
 		{
@@ -284,7 +283,7 @@ RoundEnd(winningTeam)
 				new client = GetArrayCell(topHumanKills, i);
 
 				GetClientName(client, buffer, sizeof(buffer));
-				Format(buffer, sizeof(buffer), "%i. %s	(%i Kills)", i++, buffer, g_ClientInfo[client][ClientInfo_KillsAsHuman]);
+				Format(buffer, sizeof(buffer), "%i. %s (%i Kills)", i++, buffer, g_ClientInfo[client][ClientInfo_KillsAsHuman]);
 
 				DrawPanelText(topScorePanel, buffer);
 			}
@@ -339,7 +338,6 @@ RoundEnd(winningTeam)
 	else
 	{
 		CreateTimer(10.0, Timer_RestartRound, _, TIMER_FLAG_NO_MAPCHANGE);
-		//SetConVarInt(FindConVar("mp_clan_restartround"), 10);
 	}
 }
 
@@ -450,10 +448,12 @@ public Action:Timer_RestartRound(Handle:timer)
 			if (IsClientInGame(i) && !IsClientSourceTV(i))
 			{
 				RemoveScreenOverlay(i);
-
-				if (i != g_iZombie)
+				
+				if (i != g_iZombie && GetClientTeam(i) > Team_Spectator)
 				{
+					// This prevents the players from committing suicide
 					SetPlayerState(i, PlayerState_ObserverMode);
+					
 					ChangeClientTeam(i, Team_Allies);
 				}
 			}
@@ -484,7 +484,7 @@ public Action:Timer_RestartRound(Handle:timer)
 
 		new entity = FindEntityByClassname(-1, "dod_round_timer");
 
-		// Roundtimers are preserved on round restarts, and therefore it needs to get removed when the mod is inactive.
+		// Round-timers are preserved on round restarts, and therefore it needs to get removed when the mod is inactive.
 		if (entity != -1)
 		{
 			AcceptEntityInput(entity, "Kill");

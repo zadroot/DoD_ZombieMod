@@ -54,7 +54,7 @@ enum ClientInfo
 	ClientInfo_KillsAsHuman,         // Total number of kills the player has as human.
 	ClientInfo_KillsAsZombie,        // Total number of kills the player has as zombie.
 
-	bool:ClientInfo_IsCritial,       // True if zombie is critical (only has 1 hp), false otherwise
+	bool:ClientInfo_IsCritial,       // True if zombie is critical (only has 2 hp), false otherwise
 	ClientInfo_Critter,              // Userid of the attacker that scored the crirital hit on the player.
 
 	bool:ClientInfo_SelectedClass,   // True if player has selected a player class, false otherwise.
