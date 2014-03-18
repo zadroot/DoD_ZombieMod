@@ -44,7 +44,7 @@ public OnClientPutInServer(client)
 	SDKHook(client, SDKHook_WeaponCanUse, OnWeaponCanUse);
 	SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamage);
 	SDKHook(client, SDKHook_ShouldCollide, OnShouldCollide);
-	
+
 #if defined _SENDPROXYMANAGER_INC_
 	if (g_bUseSendProxy)
 	{
@@ -59,11 +59,9 @@ public OnClientPutInServer(client)
 	g_ClientInfo[client][ClientInfo_SelectedClass] =
 	g_ClientInfo[client][ClientInfo_HasCustomClass] =
 	g_ClientInfo[client][ClientInfo_ShouldAutoEquip] = false;
-	
+
 	EmitSoundToClient(client, g_szSounds[Sound_JoinServer]);
 }
-
-// ADD CLASS SELECTION MENU
 
 public OnClientDisconnect_Post(client)
 {
@@ -205,9 +203,9 @@ public Event_PlayerSpawn(Handle:event, String:name[], bool:dontBroadcast)
 					GivePlayerItem(client, "weapon_spade");
 
 					PlaySoundFromPlayer(client, g_szSounds[Sound_ZombieSpawn]);
-					
+
 					SetPlayerModel(client, Model_Zombie_Default);
-					
+
 					SetPlayerLaggedMovementValue(client, g_ConVars[ConVar_Zombie_Speed][Value_Float]);
 				}
 			}
@@ -301,12 +299,12 @@ public Action:Timer_SwitchToZombieTeam(Handle:timer, any:data)
 			if (g_ClientInfo[attacker][ClientInfo_IsCritial] && g_ConVars[ConVar_Zombie_CritReward][Value_Int])
 			{
 				new newHealth = GetClientHealth(attacker) + g_ConVars[ConVar_Zombie_CritReward][Value_Int];
-				
+
 				SetEntityHealth(attacker, newHealth);
 				g_ClientInfo[attacker][ClientInfo_Health] = FloatMul(g_ClientInfo[attacker][ClientInfo_DamageScale], float(newHealth));
-				
+
 				g_ClientInfo[attacker][ClientInfo_IsCritial] = false;
-				
+
 				ZM_PrintToChat(attacker, "You received a %ihp boost for your kill!", g_ConVars[ConVar_Zombie_CritReward][Value_Int]);
 			}
 
@@ -338,8 +336,7 @@ public Event_PlayerDamage(Handle:event, String:name[], bool:dontBrodcast)
 		&& !g_ClientInfo[client][ClientInfo_IsCritial]
 		&& GetEventInt(event, "hitgroup") == 1)
 		{
-			new weaponId = GetEventInt(event, "weapon");
-			switch (weaponId)
+			switch (GetEventInt(event, "weapon"))
 			{
 				case
 					WeaponID_AmerKnife,
@@ -359,7 +356,7 @@ public Event_PlayerDamage(Handle:event, String:name[], bool:dontBrodcast)
 
 					g_ClientInfo[client][ClientInfo_Critter] = attackerUserId;
 					g_ClientInfo[client][ClientInfo_IsCritial] = true;
-					
+
 					decl Float:vecVelocity[3], Float:vecClientEyePos[3], Float:vecAttackerEyePos[3];
 
 					GetClientEyePosition(client, vecClientEyePos);
@@ -422,12 +419,12 @@ public Action:OnEnterPlayerState(client, &playerState)
 			g_ClientInfo[client][ClientInfo_SelectedClass] = true;
 			return Plugin_Continue;
 		}
-		
+
 		if (GetDesiredPlayerClass(client) == PlayerClass_None)
 		{
 			SetDesiredPlayerClass(client, PlayerClass_Assault);
 		}
-		
+
 		playerState = PlayerState_ObserverMode;
 		return Plugin_Changed;
 	}
@@ -467,7 +464,7 @@ public Action:OnWeaponCanUse(client, weapon)
 	{
 		decl String:className[MAX_WEAPON_LENGTH];
 		GetEdictClassname(weapon, className, sizeof(className));
-		
+
 		if (GetClientTeam(client) == Team_Axis)
 		{
 			static const String:allowedZombieWeapons[][] =
@@ -478,7 +475,7 @@ public Action:OnWeaponCanUse(client, weapon)
 				"riflegren_us_live",
 				"riflegren_ger_live"
 			};
-			
+
 			for (new i; i < sizeof(allowedZombieWeapons); i++)
 			{
 				if (StrEqual(className[7], allowedZombieWeapons[i])) // Skip the first 7 characters in className to avoid comparing the "weapon_" prefix.
@@ -514,11 +511,11 @@ public Action:OnTakeDamage(client, &attacker, &inflictor, &Float:damage, &damage
 				LogError("Error: Failed to obtain offset: \"m_flDamageAccumulator\"!");
 				return Plugin_Continue;
 			}
-			
+
 			damage *= g_ClientInfo[client][ClientInfo_DamageScale];
 
 			new Float:newHealth = g_ClientInfo[client][ClientInfo_Health] - damage;
-			
+
 			// Is the player supposed to die?
 			if (newHealth <= 0.0)
 			{

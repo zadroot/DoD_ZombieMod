@@ -116,7 +116,7 @@ GetPlayerPistol(client)
 		{
 			return Pistol_Colt;
 		}
-		
+
 		if (StrEqual(className[7], "p38"))
 		{
 			return Pistol_P38;
@@ -174,9 +174,9 @@ SelectZombie()
 			PushArrayCell(clientArray, i);
 		}
 	}
-	
+
 	new arraySize = GetArraySize(clientArray);
-	
+
 	if (arraySize)
 	{
 		g_iZombie = GetArrayCell(clientArray, arraySize >= 2 ? GetURandomInt() % (arraySize - 1) : 0);

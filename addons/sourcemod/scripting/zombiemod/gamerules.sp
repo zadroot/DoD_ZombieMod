@@ -448,12 +448,12 @@ public Action:Timer_RestartRound(Handle:timer)
 			if (IsClientInGame(i) && !IsClientSourceTV(i))
 			{
 				RemoveScreenOverlay(i);
-				
+
 				if (i != g_iZombie && GetClientTeam(i) > Team_Spectator)
 				{
 					// This prevents the players from committing suicide
 					SetPlayerState(i, PlayerState_ObserverMode);
-					
+
 					ChangeClientTeam(i, Team_Allies);
 				}
 			}

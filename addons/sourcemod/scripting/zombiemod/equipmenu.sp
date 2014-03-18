@@ -212,7 +212,7 @@ public Handler_Main(Handle:menu, MenuAction:menuAction, client, param)
 					{
 						Menu_PerformEquip(client);
 					}
-					
+
 					case Menu_Main_ClassSelection:
 					{
 						ShowVGUIPanel(client, "class_us");

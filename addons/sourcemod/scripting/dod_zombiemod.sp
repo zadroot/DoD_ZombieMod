@@ -96,11 +96,11 @@ public OnConfigsExecuted()
 		Steam_SetGameDescription(PLUGIN_NAME);
 	}
 #endif
-	
+
 	g_iRoundWins = g_iNumZombieSpawns = g_bModActive = g_bRoundEnded = false;
 
 	g_hRoundTimer = INVALID_HANDLE;
-	
+
 	g_iZombie = -1;
 
 	LoadConfig();
@@ -117,7 +117,7 @@ public OnConfigsExecuted()
 			AcceptEntityInput(entity, "TurnOff");
 		}
 	}
-	
+
 	PrecacheSound(SOUND_BLIP);
 
 	g_iBeamSprite = PrecacheModel("materials/sprites/laser.vmt");
