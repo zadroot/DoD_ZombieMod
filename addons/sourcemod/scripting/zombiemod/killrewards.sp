@@ -41,8 +41,7 @@ enum
 
 enum WeaponInfo
 {
-	DoDWeaponAmmo:
-	WI_Ammo,
+	DoDWeaponAmmo:WI_Ammo,
 	WI_MaxAmmo,
 	WI_ClipSize
 };
