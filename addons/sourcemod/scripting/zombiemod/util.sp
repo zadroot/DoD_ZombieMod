@@ -116,8 +116,8 @@ GetPlayerPistol(client)
 		{
 			return Pistol_Colt;
 		}
-
-		else if (StrEqual(className[7], "p38"))
+		
+		if (StrEqual(className[7], "p38"))
 		{
 			return Pistol_P38;
 		}
@@ -169,17 +169,21 @@ SelectZombie()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (IsClientInGame(i) && !IsClientSourceTV(i) && g_iZombie != i)
+		if (i != g_iZombie && IsClientInGame(i) && !IsClientSourceTV(i) && GetClientTeam(i) > Team_Spectator)
 		{
 			PushArrayCell(clientArray, i);
 		}
 	}
-
+	
 	new arraySize = GetArraySize(clientArray);
-
+	
 	if (arraySize)
 	{
-		g_iZombie = GetArrayCell(clientArray, GetRandomInt(0, arraySize - 1));
+		g_iZombie = GetArrayCell(clientArray, arraySize >= 2 ? GetURandomInt() % (arraySize - 1) : 0);
+	}
+	else
+	{
+		LogError("Failed to select zombie");
 	}
 
 	CloseHandle(clientArray);

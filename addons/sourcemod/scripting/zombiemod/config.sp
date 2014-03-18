@@ -48,12 +48,6 @@ enum
 enum
 {
 	Model_Zombie_Default,
-	Model_Zombie_Custom1,
-	Model_Zombie_Custom2,
-	Model_Zombie_Custom3,
-	Model_Zombie_Custom4,
-	Model_Zombie_Custom5,
-	Model_Zombie_Custom6,
 
 	Model_Size
 };
@@ -92,13 +86,7 @@ static const String:g_szSoundKeyNames[Sound_Size][] =
 
 static const String:g_szModelKeyNames[Model_Size][] =
 {
-	"Model_Zombie_Default",
-	"Model_Zombie_Custom1",
-	"Model_Zombie_Custom2",
-	"Model_Zombie_Custom3",
-	"Model_Zombie_Custom4",
-	"Model_Zombie_Custom5",
-	"Model_Zombie_Custom6"
+	"Model_Zombie_Default"
 };
 
 static const String:g_szOverlayKeyNames[Overlay_Size][] =
@@ -141,7 +129,6 @@ LoadConfig()
 					if (FileExists(buffer))
 					{
 						PrecacheSound(g_szSounds[i]);
-
 						AddFileToDownloadsTable(buffer);
 					}
 				}

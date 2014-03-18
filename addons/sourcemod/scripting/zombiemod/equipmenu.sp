@@ -34,7 +34,8 @@ enum
 	Menu_Main_KeepWeapons,
 	Menu_Main_CreateClass,
 	Menu_Main_ChangeCategory,
-	Menu_Main_EquipClass
+	Menu_Main_EquipClass,
+	Menu_Main_ClassSelection
 };
 
 enum
@@ -104,7 +105,16 @@ InitEquipMenu()
 	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Keep Current Weapons\n \n");
 	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Create Custom Class");
 	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Change Category Item");
+#if defined _SENDPROXYMANAGER_INC_
+	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Equip Custom Class\n \n");
+	// The class selection menu is not functional while the team index hack is active
+	if (g_bUseSendProxy)
+	{
+		AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Open Class Selection Menu");
+	}
+#else
 	AddMenuItem(g_EquipMenu[Menu_Main], NULL_STRING, "Equip Custom Class");
+#endif
 
 	SetMenuExitButton(g_EquipMenu[Menu_Main], false);
 
@@ -202,6 +212,11 @@ public Handler_Main(Handle:menu, MenuAction:menuAction, client, param)
 					{
 						Menu_PerformEquip(client);
 					}
+					
+					case Menu_Main_ClassSelection:
+					{
+						ShowVGUIPanel(client, "class_us");
+					}
 				}
 			}
 		}
@@ -269,7 +284,7 @@ public Handler_Pistol(Handle:menu, MenuAction:menuAction, client, param)
 		}
 	}
 
-	//return 0;
+	return 0;
 }
 
 public Handler_Equipment(Handle:menu, MenuAction:menuAction, client, param)
@@ -295,7 +310,7 @@ public Handler_Equipment(Handle:menu, MenuAction:menuAction, client, param)
 		}
 	}
 
-	//return 0;
+	return 0;
 }
 
 public Handler_ChangeCategory(Handle:menu, MenuAction:menuAction, client, param)
@@ -333,7 +348,7 @@ public Handler_ChangeCategory(Handle:menu, MenuAction:menuAction, client, param)
 		}
 	}
 
-	//return 0;
+	return 0;
 }
 
 public Handler_KeepCustomClass(Handle:menu, MenuAction:menuAction, client, param)
@@ -359,7 +374,7 @@ public Handler_KeepCustomClass(Handle:menu, MenuAction:menuAction, client, param
 		}
 	}
 
-	//return 0;
+	return 0;
 }
 
 Menu_PerformEquip(client)

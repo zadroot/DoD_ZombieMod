@@ -36,10 +36,15 @@ InitCommands()
 	AddCommandListener(CommandListener_DropAmmo, "dropammo");
 }
 
+ShowTimeleft()
+{
+	ZM_PrintToChatAll("Rounds played: %i of %i before map-change.", g_iRoundWins, g_ConVars[ConVar_WinLimit][Value_Int]);
+}
+
 public Action:OnClientSayCommand(client, const String:command[], const String:sArgs[])
 {
 	decl String:text[13];
-	strcopy(text, sizeof(text), sArgs);
+	Format(text, sizeof(text), sArgs); // strcopy is evil
 	StripQuotes(text);
 
 	if (StrEqual(text,    "timeleft", false)
@@ -61,12 +66,12 @@ public Action:OnClientSayCommand(client, const String:command[], const String:sA
 			}
 			else
 			{
-				ZM_PrintToChat(client, "You can use equipmenu only once per spawn!");
+				ZM_PrintToChat(client, "You can use equip-menu only once per spawn!");
 			}
 		}
 		else
 		{
-			ZM_PrintToChat(client, "90 seconds has passed, you cannot equip anymore!");
+			ZM_PrintToChat(client, "90 seconds has passed, you cannot equip any more!");
 		}
 
 		return Plugin_Handled;
@@ -82,9 +87,10 @@ public Action:CommandListener_TimeLeft(client, const String:command[], numArgs)
 	return Plugin_Handled;
 }
 
-ShowTimeleft()
+RedisplayTeamSelection(client, const String:message[])
 {
-	ZM_PrintToChatAll("Rounds played: %i of %i before mapchange.", g_iRoundWins, g_ConVars[ConVar_WinLimit][Value_Int]);
+	PrintCenterText(client, message);
+	ClientCommand(client, "changeteam");
 }
 
 public Action:CommandListener_JoinTeam(client, const String:command[], numArgs)
@@ -102,17 +108,14 @@ public Action:CommandListener_JoinTeam(client, const String:command[], numArgs)
 			{
 				case Team_Unassigned: // Auto-assign
 				{
-					PrintCenterText(client, "You cannot Auto-Assign");
-					ClientCommand(client, "changeteam");
+					RedisplayTeamSelection(client, "You cannot Auto-Assign");
 
 					return Plugin_Handled;
 				}
 
 				case Team_Spectator:
 				{
-					PrintCenterText(client, "You cannot join Spectators");
-
-					ClientCommand(client, "changeteam");
+					RedisplayTeamSelection(client, "You cannot join Spectators");
 
 					return Plugin_Handled;
 				}
@@ -130,9 +133,7 @@ public Action:CommandListener_JoinTeam(client, const String:command[], numArgs)
 
 						case Team_Axis:
 						{
-							PrintCenterText(client, "You cannot join Humans at this time");
-
-							ClientCommand(client, "changeteam");
+							RedisplayTeamSelection(client, "You cannot join Humans at this time");
 
 							return Plugin_Handled;
 						}
@@ -147,7 +148,7 @@ public Action:CommandListener_JoinTeam(client, const String:command[], numArgs)
 				}
 			}
 		}
-		else if (desiredTeam == Team_Allies) // Bypass teambalance.
+		else if (desiredTeam == Team_Allies) // Bypass team balance.
 		{
 			ChangeClientTeam(client, Team_Allies);
 
